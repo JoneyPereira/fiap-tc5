@@ -2,9 +2,9 @@
 
 API desenvolvida para gestão de itens, controle, cadastro e manutenção de preço.
 
-## Workflow
+## Diagrama
 
-![modelo-realcional](src/main/resources/modelo-relacional.png)
+![modelo-realcional](src/main/resources/modelo-relacional-api_products_db.png)
 
 ## Como rodar esta aplicação springboot
 
