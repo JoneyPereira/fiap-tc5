@@ -18,8 +18,7 @@ public class ProductDTO {
     private BigDecimal price;
     private String description;
     private String imageUri;
-    private Integer amount_stock;
-    private Integer amount = 1;
+    private Integer amount;
 
     public ProductDTO(Product entity) {
         id_product = entity.getId_product();

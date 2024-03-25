@@ -34,6 +34,9 @@ acompanha o projeto. Neste caso, entre na pasta raiz de cada Serviço e utilize 
 ## Diagramas
 ![arquitetura](arquitetura.png)
 
+## Postman Collection
+Tc-5.postman_collection.json
+
 --------------------------------------------------------------------------------------------
 ### tc5-login-users
 
