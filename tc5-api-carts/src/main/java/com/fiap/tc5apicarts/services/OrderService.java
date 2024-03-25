@@ -54,17 +54,12 @@ public class OrderService {
 
         for (ProductDTO p : dto.getProducts()){
             StockDTO stock = productFeignClient.findByUuid(p.getId_product());
-            var input = stock.getAmount_stock();
-            var output = p.getAmount();
-            stock.setAmount_stock(input - output);
-
-            order.getProducts().add(copyDtoToEntity(stock, p));
-            productRepository.save(copyToEntity(stock));
+            var product = copyDtoToEntity(stock, p);
+            order.getProducts().add(product);
+            productRepository.save(product);
         }
 
         order = orderRepository.save(order);
-
-        //dto.getProducts().forEach();
 
         return new OrderDTO(order);
     }
@@ -77,7 +72,7 @@ public class OrderService {
             for (Product p : order.getProducts()){
                 StockOutputDTO stockOutputDTO = new StockOutputDTO();
                 stockOutputDTO.setId_product(p.getId_product());
-                stockOutputDTO.setAmount_stock(1);
+                stockOutputDTO.setAmount_stock(p.getAmount());
                 productFeignClient.outPutStock(stockOutputDTO);
             }
             order = orderRepository.save(order);
@@ -107,14 +102,5 @@ public class OrderService {
         product.setImageuri(dto.getImageUri());
         product.setAmount(p.getAmount());
         return product;
-    }
-
-    private OrderDTO copyEntityToDto(Order order,OrderDTO dto){
-        var orderDto = new OrderDTO();
-        orderDto.setId_order(order.getId_order());
-        orderDto.setStatus(order.getStatus());
-        orderDto.setMoment(order.getMoment());
-        orderDto.setProducts(dto.getProducts());
-        return orderDto;
     }
 }

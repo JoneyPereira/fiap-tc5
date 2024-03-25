@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -26,18 +27,21 @@ public class CartService {
     @Transactional
     public CartDTO insert(UUID uuid, Integer amount) {
         CartDTO cart = new CartDTO(Instant.now(), CartStatus.PENDING);
-        StockDTO product = productFeignClient.findByUuid(uuid);
-        cart.getProducts().add(copyDtoToEntity(product));
-        cart.setTotal(copyDtoToEntity(product).getTotal());
+        StockDTO productStock = productFeignClient.findByUuid(uuid);
+        var product = copyDtoToEntity(productStock, amount);
+        cart.getProducts().add(product);
+        cart.setTotal(product.getTotal());
         return cart;
     }
 
-    private ProductDTO copyDtoToEntity(StockDTO dto){
+    private ProductDTO copyDtoToEntity(StockDTO dto, Integer amount){
         var product = new ProductDTO();
         product.setId_product(dto.getId_product());
+        product.setPrice(BigDecimal.valueOf(dto.getPrice()));
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
         product.setImageUri(dto.getImageUri());
+        product.setAmount(amount);
         return product;
     }
 }
