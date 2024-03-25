@@ -4,6 +4,8 @@ package com.fiap.tc5apicarts.services;
 import com.fiap.tc5apicarts.client.ProductFeignClient;
 import com.fiap.tc5apicarts.dto.OrderDTO;
 import com.fiap.tc5apicarts.dto.ProductDTO;
+import com.fiap.tc5apicarts.dto.StockDTO;
+import com.fiap.tc5apicarts.dto.StockOutputDTO;
 import com.fiap.tc5apicarts.entities.Order;
 import com.fiap.tc5apicarts.entities.Product;
 import com.fiap.tc5apicarts.entities.enums.OrderStatus;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -48,12 +51,20 @@ public class OrderService {
     public OrderDTO insert(OrderDTO dto) {
         Order order = new Order(null,
                 Instant.now(), OrderStatus.PENDING);
+
         for (ProductDTO p : dto.getProducts()){
-            ProductDTO product = productFeignClient.findByUuid(p.getId_product());
-            order.getProducts().add(copyDtoToEntity(product));
-            productRepository.save(copyDtoToEntity(product));
+            StockDTO stock = productFeignClient.findByUuid(p.getId_product());
+            var input = stock.getAmount_stock();
+            var output = p.getAmount();
+            stock.setAmount_stock(input - output);
+            order.getProducts().add(copyDtoToEntity(stock));
+            productRepository.save(copyDtoToEntity(stock));
         }
+
         order = orderRepository.save(order);
+
+        //dto.getProducts().forEach();
+
         return new OrderDTO(order);
     }
     @Transactional
@@ -61,6 +72,13 @@ public class OrderService {
         try {
             Order order = orderRepository.getReferenceById(uuid);
             order.setStatus(OrderStatus.PAID);
+
+            for (Product p : order.getProducts()){
+                StockOutputDTO stockOutputDTO = new StockOutputDTO();
+                stockOutputDTO.setId_product(p.getId_product());
+                stockOutputDTO.setAmount_stock(1);
+                productFeignClient.outPutStock(stockOutputDTO);
+            }
             order = orderRepository.save(order);
             return new OrderDTO(order);
         }
@@ -69,13 +87,23 @@ public class OrderService {
         }
     }
 
-    private Product copyDtoToEntity(ProductDTO dto){
+    private Product copyDtoToEntity(StockDTO dto){
         var product = new Product();
         product.setId_product(dto.getId_product());
-        product.setPrice(dto.getPrice());
+        product.setPrice(BigDecimal.valueOf(dto.getPrice()));
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
         product.setImageuri(dto.getImageUri());
+        product.setAmount(dto.getAmount_stock());
         return product;
+    }
+
+    private OrderDTO copyEntityToDto(Order order,OrderDTO dto){
+        var orderDto = new OrderDTO();
+        orderDto.setId_order(order.getId_order());
+        orderDto.setStatus(order.getStatus());
+        orderDto.setMoment(order.getMoment());
+        orderDto.setProducts(dto.getProducts());
+        return orderDto;
     }
 }

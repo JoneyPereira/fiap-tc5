@@ -2,9 +2,9 @@
 
 API desenvolvida para gestão de login e usuarios.
 
-## Workflow
+## Diagrama
 
-![modelo-realcional](modelo-relacional.png)
+![modelo-relacional](modelo-relacional.png)
 
 ## Como rodar esta aplicação springboot
 

@@ -20,5 +20,6 @@ CREATE TABLE IF NOT EXISTS tb_product(
     name            VARCHAR,
     price           BIGINT,
     description     VARCHAR,
-    imageUri        TEXT
+    imageUri        TEXT,
+    amount          INT
 );

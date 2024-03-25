@@ -27,6 +27,7 @@ public class ProductDTO {
         price = entity.getPrice();
         description = entity.getDescription();
         imageUri = entity.getImageuri();
+        amount_stock = entity.getAmount();
     }
 
     public BigDecimal getTotal(){
