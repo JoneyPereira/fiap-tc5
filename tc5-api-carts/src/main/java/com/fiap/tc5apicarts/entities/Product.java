@@ -18,4 +18,5 @@ public class Product {
     private BigDecimal price;
     private String description;
     private String imageuri;
+    private Integer amount;
 }
