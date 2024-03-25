@@ -57,8 +57,9 @@ public class OrderService {
             var input = stock.getAmount_stock();
             var output = p.getAmount();
             stock.setAmount_stock(input - output);
-            order.getProducts().add(copyDtoToEntity(stock));
-            productRepository.save(copyDtoToEntity(stock));
+
+            order.getProducts().add(copyDtoToEntity(stock, p));
+            productRepository.save(copyToEntity(stock));
         }
 
         order = orderRepository.save(order);
@@ -87,14 +88,24 @@ public class OrderService {
         }
     }
 
-    private Product copyDtoToEntity(StockDTO dto){
+    private Product copyToEntity(StockDTO dto){
         var product = new Product();
         product.setId_product(dto.getId_product());
         product.setPrice(BigDecimal.valueOf(dto.getPrice()));
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
         product.setImageuri(dto.getImageUri());
-        product.setAmount(dto.getAmount_stock());
+        return product;
+    }
+
+    private Product copyDtoToEntity(StockDTO dto, ProductDTO p){
+        var product = new Product();
+        product.setId_product(dto.getId_product());
+        product.setPrice(BigDecimal.valueOf(dto.getPrice()));
+        product.setName(dto.getName());
+        product.setDescription(dto.getDescription());
+        product.setImageuri(dto.getImageUri());
+        product.setAmount(p.getAmount());
         return product;
     }
 

@@ -18,8 +18,7 @@ public class ProductDTO {
     private BigDecimal price;
     private String description;
     private String imageUri;
-    private Integer amount_stock;
-    private Integer amount = 1;
+    private Integer amount;
 
     public ProductDTO(Product entity) {
         id_product = entity.getId_product();
@@ -27,7 +26,7 @@ public class ProductDTO {
         price = entity.getPrice();
         description = entity.getDescription();
         imageUri = entity.getImageuri();
-        amount_stock = entity.getAmount();
+        amount = entity.getAmount();
     }
 
     public BigDecimal getTotal(){
