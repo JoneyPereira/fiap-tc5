@@ -1,29 +1,36 @@
-# Tech Challenge 
+# Tech Challenge 5
 
-Bem-vindo(a) a documentação oficial desenvolvida para este Tech Challenge.
+Bem-vindo(a) a documentação oficial desenvolvida para este Tech Challenge. 
+<br>
+<p>
+Objetivo: Simular os principais microsserviços de um e-commerce. A interação e consumo entre eles. E controle de acesso através de autenticação e autorização tokenizado. 
+</p>
 
 ## Link do Repositório
-
 - [Tech Challenge](https://github.com/JoneyPereira/fiap-tc5)
 
 ## Tecnologias e Ferramentas
 - Java 17 e 21
 - Maven
 - Spring Data JPA
+- Spring Web
+- Spring Security
+- Spring Validation
+- Spring OpenFeign
+- Jwt
 - PostgreSQL
 - Lombok
 - Swagger
-- Spring Web
 - Postman
 - IntelliJ
 - Git
 - GitHub
 - Docker
 
-## Como inicar o projeto
+## Como rodar o projeto
 
-Para inicar o projeto, utilize o `maven`. Caso não tenha o Maven instalado, você pode utilizar o wrapper que
-acompanha o projeto. Neste caso, entre na pasta raiz de cada Serviço e utilize o comando `./mvnw`.
+Para rodar todo o projeto, utilize o `maven`. Caso não tenha o Maven instalado, pode utilizar o wrapper que
+acompanha o projeto. Neste caso, entre na pasta raiz de cada serviço e utilize o comando `./mvnw`.
 É necessário estar com `Docker` rodando para conexão com banco de dados.
 
 | Comando                  | Descrição                       | Requisitos                  |
@@ -40,14 +47,15 @@ Tc-5.postman_collection.json
 --------------------------------------------------------------------------------------------
 ### tc5-login-users
 
-| Método | Url               | Descrição                 |
-|--------|-------------------|---------------------------|
-| POST   | /auth/register    | Registra um novo usuario  |
-| POST   | /auth/login       | Faz o login de um usuario |
-| GET    | /user/all         | Busca todos os usuarios   |
-| PUT    | /user/update/{id} | Atualiza um usuario       |
-| DELETE | /user/delete/{id} | Apaga um usuario          |
+| Método | Url                    | Descrição                 | Permissão |       
+|--------|------------------------|---------------------------|-----------|
+| POST   | /auth/register         | Registra um novo usuario  | All       |
+| POST   | /auth/login            | Faz o login de um usuario | All       |
+| GET    | /user/all              | Busca todos os usuarios   | ADMIN     |
+| PUT    | /user/update/byid/{id} | Atualiza um usuario       | USER      |
+| DELETE | /user/delete/{id}      | Apaga um usuario          | ADMIN     |
 
+Login protegido e seções controladas através de token.
 ### Exemplos de entrada
 
 ##### <a>POST - /auth/register</a>
@@ -97,6 +105,18 @@ curl --location --request PUT 'http://localhost:8080/users/update/3' \
 curl --location --request DELETE 'http://localhost:8080/users/delete/4' \
 --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6InRlc3RlLTMiLCJpZCI6MywidXNlciI6InRlc3RlLTMiLCJleHAiOjE3MTExMzI1NTV9.1iR0XSLbnZZEWDV_l202q_ltyXYg4dDmEMIGC1jg9Ig'
 ```
+
+##### Complement
+Esse microsservico permite ainda adicionar complemento para dados adicionais do usuário como: endereço, data de nascimento, cpf e etc. Sendo necessário para isso indicar o usuário ao qual terá informações adicionadas.
+
+| Método | Url                     | Descrição                                      | Permissão  |       
+|--------|-------------------------|------------------------------------------------|------------|
+| POST   | /complement/save        | Registra um novo complemento ligado ao usuário | ADMIN/USER |
+| GET    | /complement/all         | Busca todos os complementos                    | ADMIN/USER |
+| GET    | /complement/byid/{id}   | Busca um complemento de usuario                | ADMIN/USER |
+| PUT    | /complement/update/{id} | Atualiza um complemento de usuario             | ADMIN/USER |
+| DELETE | /complement/delete/{id} | Apaga um complemento de usuario                | ADMIN/USER |
+
 --------------------------------------------------------------------------------------------
 ### tc5-api-products
 
